@@ -7,16 +7,12 @@
   const app = express();
   app.use(express.static('public'));
 
-  app.get('/api/notes/search', (req, res) => {
-    const searchTerm = req.query.searchTerm;
-    console.log(searchTerm, 'searchTerm')
-    const found = data.filter(item => item.title.includes(searchTerm));
-    console.log(found, 'found')
-    res.status(200).json(found);
-  });
-
   app.get('/api/notes', (req, res) => {
-    console.log('notes!')
+    const searchTerm = req.query.searchTerm;
+    if (searchTerm) {
+      const found = data.filter(item => item.title.includes(searchTerm));
+      res.status(200).json(found);
+    }
     res.json(data);
   });
 
