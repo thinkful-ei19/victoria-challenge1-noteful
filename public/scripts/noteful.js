@@ -74,35 +74,42 @@ const noteful = (function () {
         title: editForm.find('.js-note-title-entry').val(),
         content: editForm.find('.js-note-content-entry').val()
       };
-      if (noteObj.id) {
+      if (store.currentNote.id) {
         api.update(store.currentNote.id, noteObj, updateResponse => {
           store.currentNote = updateResponse;
-          api.search(store.currentSearchTerm, searchResponse => {
-            store.notes = searchResponse;
+          api.search(store.currentSearchTerm, updateResponse => {
+            store.notes = updateResponse;
             render();
           });
         });
       } else {
-        console.log('Create Note, coming soon...');
+        api.create(noteObj, updateResponse => {
+          store.currentNote = updateResponse;
+          api.search(store.currentSearchTerm, updateResponse => {
+            store.notes = updateResponse;
+            render();
+          });
+        });
       }
-      });
+
+    });
   }
 
   function handleNoteStartNewSubmit() {
     $('.js-start-new-note-form').on('submit', event => {
       event.preventDefault();
-
-      console.log('Start New Note, coming soon...');
-
+      render();
     });
   }
 
   function handleNoteDeleteClick() {
     $('.js-notes-list').on('click', '.js-note-delete-button', event => {
       event.preventDefault();
-
-      console.log('Delete Note, coming soon...');
-
+      const id = getNoteIdFromElement(event.currentTarget);
+      api.delete(id, () => {
+        store.findAndDelete(id);
+        render();
+      });
     });
   }
 
