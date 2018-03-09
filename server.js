@@ -10,7 +10,7 @@
   app.use(express.json());
   app.use(morgan('dev'));
   app.use(express.static('public'));
-  app.use('/v1', notesRouter);
+  app.use('/api', notesRouter);
 
   app.use(function (req, res, next) {
     var err = new Error('Not Found');
@@ -26,9 +26,12 @@
     });
   });
 
-  // Listen for incoming connections
-  app.listen(PORT, function () {
-    console.info(`Server listening on ${this.address().port}`);
-  }).on('error', err => {
-    console.error(err);
-  });
+  if (require.main === module) {
+    app.listen(PORT, function () {
+      console.info(`Server listening on ${this.address().port}`);
+    }).on('error', err => {
+      console.error(err);
+    });
+  }
+
+module.exports = app;
